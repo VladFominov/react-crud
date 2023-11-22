@@ -1,22 +1,23 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { TextField, Button } from "@mui/material";
 import API from "../services/api";
 type Props = {
-  onClose?: () => void;
-  updatePosts?: () => void;
+  onClose: () => void;
+  singlPostData: FormData;
 };
 type FormData = {
+  id: number | null;
   url: string;
   title: string;
   text: string;
 };
-const initialState = {
-  url: "",
-  title: "",
-  text: "",
-};
-const MuiForm = ({ onClose, updatePosts }: Props) => {
-  const [state, setState] = useState<FormData>(initialState);
+
+const MuiUpdateDataForm = ({ onClose, singlPostData }: Props) => {
+  const [state, setState] = useState<FormData>(singlPostData);
+
+  useEffect(() => {
+    setState(singlPostData);
+  }, [singlPostData]);
 
   const onChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -25,31 +26,32 @@ const MuiForm = ({ onClose, updatePosts }: Props) => {
 
   const handleSubmitForm = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (Object.values(state).some((value) => value.trim() === "")) {
-      alert("Form cannot be empty!");
-    } else {
-      setState(initialState);
-    }
     try {
-      await API.createPost({
-        title: state.title,
-        text: state.text,
-        url: state.url,
-      });
-      updatePosts?.();
+      // Use API.updatePost with state and post ID
+      await API.updatePost(singlPostData.id, state);
     } catch (error) {
-      console.error("Error creating post:", error);
+      console.error("Error updating post:", error);
     }
 
-    setState(initialState);
-    onClose?.();
+    onClose();
   };
 
   return (
     <div>
-      <p>Create a new post</p>
+      <p>Edit</p>
       <form noValidate autoComplete="off" onSubmit={handleSubmitForm}>
         <div className="flex flex-col gap-y-6">
+          <TextField
+            fullWidth
+            label="Image"
+            variant="outlined"
+            name="url"
+            value={state.id}
+            onChange={onChangeHandler}
+            InputProps={{
+              readOnly: true,
+            }}
+          />
           <TextField
             fullWidth
             label="Image"
@@ -81,11 +83,11 @@ const MuiForm = ({ onClose, updatePosts }: Props) => {
           <Button onClick={onClose} type="button">
             Cancel
           </Button>
-          <Button type="submit">Create a new post</Button>
+          <Button type="submit">Save</Button>
         </div>
       </form>
     </div>
   );
 };
 
-export default MuiForm;
+export default MuiUpdateDataForm;

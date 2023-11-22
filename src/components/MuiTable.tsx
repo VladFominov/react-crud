@@ -12,6 +12,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import CreateIcon from "@mui/icons-material/Create";
 import TablePagination from "@mui/material/TablePagination";
 import API from "../services/api";
+import MuiModal from "./MuiModal";
 
 interface Post {
   id: number | null;
@@ -27,10 +28,23 @@ type Props = {
 const MuiTable = ({ posts, onDeletePost }: Props) => {
   const [page, setPage] = useState<number>(0);
   const [rowsPerPage, setRowsPerPage] = useState<number>(20);
+  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  const [open, setOpen] = useState(false);
 
   const navigate = useNavigate();
 
-  const handleChangePage = (event: unknown, newPage: number) => {
+  const handleOpen = () => setOpen(true);
+
+  const handleUpdatePost = (postId: number | null) => {
+    const postToUpdate = posts.find((post) => post.id === postId) || null;
+    setSelectedPost(postToUpdate);
+    setOpen(true);
+  };
+
+  const handleChangePage = (
+    _: React.MouseEvent<HTMLButtonElement> | null,
+    newPage: number
+  ) => {
     setPage(newPage);
   };
   const handleChangeRowsPerPage = (
@@ -60,75 +74,85 @@ const MuiTable = ({ posts, onDeletePost }: Props) => {
   };
 
   return (
-    <Paper sx={{ width: "100%", overflow: "hidden" }}>
-      <TableContainer sx={{ maxHeight: 550 }}>
-        <Table stickyHeader aria-label="sticky table">
-          <TableHead>
-            <TableRow>
-              <TableCell>Id</TableCell>
-              <TableCell align="left">Image</TableCell>
-              <TableCell align="left">Title</TableCell>
-              <TableCell align="left">Text</TableCell>
-              <TableCell align="center">Action</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {slicedPosts.map((data) => (
-              // <div  onClick={() => navigate(`/post/${data.id}`)}
-              //   className="cursor-pointer  hover:bg-slate-100"></div>
-              <TableRow
-                className="cursor-pointer  hover:bg-slate-100"
-                key={data.id}
-                sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                onClick={() => handleTableRowClick(data.id)}
-              >
-                <TableCell component="th" scope="row">
-                  {data.id}
-                </TableCell>
-                <TableCell align="left">
-                  <div className="w-[3rem] h-[3rem]">
-                    <img src={data.url} alt="image of the post" />
-                  </div>
-                </TableCell>
-                <TableCell align="left">{data.title}</TableCell>
-                <TableCell align="left">{data.text}</TableCell>
+    <>
+      <div className="my-3">
+        <MuiModal
+          open={open}
+          onClick={() => handleOpen()}
+          onClose={() => setOpen(false)}
+          selectedPost={selectedPost}
+        />
+      </div>
 
-                <TableCell align="center">
-                  <div className="flex justify-center gap-2">
-                    <div
-                      className="cursor-pointer "
-                      onClick={(e) => {
-                        e.stopPropagation();
-                      }}
-                    >
-                      <CreateIcon />
-                    </div>
-                    <div
-                      className="cursor-pointer "
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleDeletePost(data.id);
-                      }}
-                    >
-                      <DeleteIcon sx={{ color: "red" }} />
-                    </div>
-                  </div>
-                </TableCell>
+      <Paper sx={{ width: "100%", overflow: "hidden" }}>
+        <TableContainer sx={{ maxHeight: 550 }}>
+          <Table stickyHeader aria-label="sticky table">
+            <TableHead>
+              <TableRow>
+                <TableCell>Id</TableCell>
+                <TableCell align="left">Image</TableCell>
+                <TableCell align="left">Title</TableCell>
+                <TableCell align="left">Text</TableCell>
+                <TableCell align="center">Action</TableCell>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-      <TablePagination
-        rowsPerPageOptions={[5, 10, 15, 20, 25, 30, 50, 100]}
-        component="div"
-        count={posts.length}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        onPageChange={handleChangePage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
-      />
-    </Paper>
+            </TableHead>
+            <TableBody>
+              {slicedPosts.map((data) => (
+                <TableRow
+                  className="cursor-pointer  hover:bg-slate-100"
+                  key={data.id}
+                  sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                  onClick={() => handleTableRowClick(data.id)}
+                >
+                  <TableCell component="th" scope="row">
+                    {data.id}
+                  </TableCell>
+                  <TableCell align="left">
+                    <div className="w-[3rem] h-[3rem]">
+                      <img src={data.url} alt="image of the post" />
+                    </div>
+                  </TableCell>
+                  <TableCell align="left">{data.title}</TableCell>
+                  <TableCell align="left">{data.text}</TableCell>
+
+                  <TableCell align="center">
+                    <div className="flex justify-center gap-2">
+                      <div
+                        className="cursor-pointer "
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleUpdatePost(data.id);
+                        }}
+                      >
+                        <CreateIcon />
+                      </div>
+                      <div
+                        className="cursor-pointer "
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDeletePost(data.id);
+                        }}
+                      >
+                        <DeleteIcon sx={{ color: "red" }} />
+                      </div>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+        <TablePagination
+          rowsPerPageOptions={[5, 10, 15, 20, 25, 30, 50, 100]}
+          component="div"
+          count={posts.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
+      </Paper>
+    </>
   );
 };
 

@@ -1,8 +1,8 @@
-import * as React from "react";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Modal from "@mui/material/Modal";
 import MuiForm from "./MuiForm";
+import MuiUpdateDataForm from "./MuiUpdateDataForm";
 
 const style = {
   position: "absolute",
@@ -15,25 +15,39 @@ const style = {
   boxShadow: 24,
   p: 4,
 };
+interface Post {
+  id: number | null;
+  title: string;
+  text: string;
+  url: string;
+}
 
-const MuiModal = () => {
-  const [open, setOpen] = React.useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+type Props = {
+  open: boolean;
+  onClick: () => void;
+  onClose: () => void;
+  selectedPost: Post | null;
+};
+
+const MuiModal = ({ open, onClose, selectedPost, onClick }: Props) => {
   return (
     <>
-      <Button variant="contained" onClick={handleOpen}>
+      <Button variant="contained" onClick={onClick}>
         CREATE NEW POST
       </Button>
 
       <Modal
         open={open}
-        onClose={handleClose}
+        onClose={onClose}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
-          <MuiForm onClose={handleClose} />
+          {selectedPost !== null && selectedPost !== undefined ? (
+            <MuiUpdateDataForm onClose={onClose} singlPostData={selectedPost} />
+          ) : (
+            <MuiForm onClose={onClose} />
+          )}
         </Box>
       </Modal>
     </>
