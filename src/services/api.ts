@@ -8,7 +8,7 @@ interface Post {
 
 const fetchAllPosts = async () => {
   const { data } = await axios.get("https://yourtestapi.com/api/posts/");
-  console.log("fetchAllPosts: ", data);
+
   return data;
 };
 
