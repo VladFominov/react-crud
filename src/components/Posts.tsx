@@ -1,10 +1,8 @@
 import { useEffect, useState } from "react";
 
-// import MuiModal from "./MuiModal";
 import CircularProgress from "@mui/material/CircularProgress";
 import API from "../services/api";
 import MuiTable from "./MuiTable";
-import MuiForm from "./MuiForm";
 
 interface Posts {
   id: number | null;
@@ -32,15 +30,6 @@ const Posts = () => {
     fetchData();
   }, []);
 
-  const updatePosts = async () => {
-    try {
-      const data = await API.fetchAllPosts();
-      setPosts(data);
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
   console.log("posts: ", posts);
 
   const onDeletePost = (postId: number | null) => {
@@ -56,7 +45,6 @@ const Posts = () => {
       ) : (
         <>
           <MuiTable posts={posts} onDeletePost={onDeletePost} />
-          <MuiForm updatePosts={updatePosts} />
         </>
       )}
     </section>

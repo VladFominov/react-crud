@@ -27,7 +27,6 @@ const MuiUpdateDataForm = ({ onClose, singlPostData }: Props) => {
   const handleSubmitForm = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      // Use API.updatePost with state and post ID
       await API.updatePost(singlPostData.id, state);
     } catch (error) {
       console.error("Error updating post:", error);

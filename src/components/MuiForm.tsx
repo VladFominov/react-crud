@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { TextField, Button } from "@mui/material";
+
 import API from "../services/api";
 type Props = {
   onClose?: () => void;
@@ -47,7 +48,10 @@ const MuiForm = ({ onClose, updatePosts }: Props) => {
 
   return (
     <div>
-      <p>Create a new post</p>
+      <div className="text-center text-xl mb-6">
+        <p>Create a new post</p>
+      </div>
+
       <form noValidate autoComplete="off" onSubmit={handleSubmitForm}>
         <div className="flex flex-col gap-y-6">
           <TextField
@@ -81,7 +85,9 @@ const MuiForm = ({ onClose, updatePosts }: Props) => {
           <Button onClick={onClose} type="button">
             Cancel
           </Button>
-          <Button type="submit">Create a new post</Button>
+          <Button variant="contained" type="submit">
+            Create a new post
+          </Button>
         </div>
       </form>
     </div>

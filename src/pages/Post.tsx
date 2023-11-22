@@ -13,7 +13,6 @@ import Paper from "@mui/material/Paper";
 import API from "../services/api";
 
 interface Post {
-  // id: number | null;
   title: string;
   text: string;
   url: string;

@@ -1,7 +1,5 @@
 import axios from "axios";
 
-// axios.defaults.baseURL = "https://api-football-v1.p.rapidapi.com/";
-
 interface Post {
   url: string;
   title: string;
@@ -61,10 +59,3 @@ const API = {
 };
 
 export default API;
-
-// import API from "services/api/api";c
-//  try {
-//       const data = await API.signUp(credentials);
-
-//       return data;
-//     }
